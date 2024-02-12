@@ -20,10 +20,11 @@ function readBoard() {
       let cell = document.getElementById(i + "" + j);
       if (cell.value === "") {
         board[i][j] = 0;
-        cell.style.backgroundColor = "#c5eded";
+        cell.style.backgroundColor = "#ffffff";
       } else {
         board[i][j] = parseInt(cell.value);
-        cell.style.backgroundColor = "#fefcbf";
+        cell.style.backgroundColor = "#2b3355";
+        cell.style.color = "#ffffff";
       }
       cell.setAttribute("disabled", "true");
     }
