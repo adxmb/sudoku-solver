@@ -49,6 +49,8 @@ function clearBoard() {
       let cell = document.getElementById(i + "" + j);
       cell.removeAttribute("disabled");
       cell.style.backgroundColor = "#ffffff";
+      cell.style.color = "#2b3355";
+      board[i][j] = 0;
       cell.value = "";
     }
   }
