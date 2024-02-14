@@ -21,10 +21,15 @@ function readBoard() {
       if (cell.value === "") {
         board[i][j] = 0;
         cell.style.backgroundColor = "#ffffff";
-      } else {
+      } else if (
+        checkInput(cell.value) &&
+        isLegal(i, j, parseInt(cell.value))
+      ) {
         board[i][j] = parseInt(cell.value);
         cell.style.backgroundColor = "#2b3355";
         cell.style.color = "#ffffff";
+      } else {
+        return false;
       }
       cell.setAttribute("disabled", "true");
     }
@@ -54,6 +59,11 @@ function clearBoard() {
       cell.value = "";
     }
   }
+}
+
+// Checks if the input is a number between 1 and 9
+function checkInput(input) {
+  return !(isNaN(input) || input < 1 || input > 9);
 }
 
 // Checks if a number is already in the row, column or 3x3 box
@@ -95,30 +105,40 @@ function checkBox(row, col, num) {
   return true;
 }
 
-function solveSudoku() {
-  for (let i = 0; i < SIZE; i++) {
-    for (let j = 0; j < SIZE; j++) {
-      if (board[i][j] === 0) {
-        for (let num = 1; num <= SIZE; num++) {
-          if (isLegal(i, j, num)) {
-            board[i][j] = num;
-            if (solveSudoku()) {
-              return true;
-            } else {
-              board[i][j] = 0;
-            }
-          }
-        }
-        return false;
+function solveSudoku(row, col) {
+  // If the last cell is reached, the board is solved
+  if (row === SIZE - 1 && col === SIZE) {
+    return true;
+  }
+
+  // If the last column is reached, move to the next row
+  if (col === SIZE) {
+    row++;
+    col = 0;
+  }
+
+  // If the cell is already filled, move to the next cell
+  if (board[row][col] > 0) {
+    return solveSudoku(row, col + 1);
+  }
+
+  // Try all numbers from 1 to 9
+  for (let num = 1; num <= SIZE; num++) {
+    if (isLegal(row, col, num)) {
+      board[row][col] = num;
+      if (solveSudoku(row, col + 1)) {
+        return true;
       }
     }
+    board[row][col] = 0;
   }
-  return true;
+
+  return false;
 }
 
 const solve = document.getElementById("solve");
 solve.addEventListener("click", () => {
-  if (!readBoard() || !solveSudoku()) {
+  if (!readBoard() || !solveSudoku(0, 0)) {
     clearBoard();
     alert("Invalid sudoku board");
   } else {
